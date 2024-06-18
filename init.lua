@@ -300,6 +300,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
       vim.keymap.set('n', '<C-s>', '<cmd>w<cr>', { desc = 'Save changes in current buffer' })
+      vim.keymap.set('n', '<C-a>', '<cmd>wqa<cr>', { desc = 'Save and exit all buffers' })
       vim.keymap.set('n', '<leader>bd', '<cmd>bd<cr>', { desc = 'close current buffer' })
       vim.keymap.set('n', '<leader>bo', ':%bd!|e #|bd #|normal`"<CR>', { desc = 'close all but current buffer' })
       vim.keymap.set('n', '<leader>u', '<cmd>DBUI<cr>', { desc = 'Open DadBod UI' })
