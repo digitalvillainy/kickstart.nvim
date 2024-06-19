@@ -759,7 +759,7 @@ require('lazy').setup({
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
-
+      require('mini.move').setup()
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
       --  and try some other statusline plugin
@@ -774,7 +774,6 @@ require('lazy').setup({
       statusline.section_location = function()
         return '%2l:%-2v'
       end
-
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
