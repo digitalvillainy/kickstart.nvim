@@ -1,0 +1,11 @@
+{
+  "vdd": {
+    "prefix": "vdd",
+    "body": [
+      "echo '<pre/>';",
+      "var_dump(${1})",
+      "die();${2}"
+    ],
+    "description": "vdd"
+  }
+}

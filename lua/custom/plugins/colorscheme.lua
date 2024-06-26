@@ -1,10 +1,8 @@
 return {
-  'scottmckendry/cyberdream.nvim',
-  lazy = false,
-  priority = 1000,
-  transparent = true,
-  options = {
-    terminal_colors = true,
-    transparent = true,
+  {
+    'folke/tokyonight.nvim',
+    opts = {
+      transparent = true,
+    },
   },
 }
