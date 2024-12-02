@@ -196,12 +196,13 @@ require('lazy').setup({
 
       -- Document existing key chains
       require('which-key').add {
+        { '<leader>o', name = '[o]pen mini.files' },
         { '<leader>c', name = '[C]ode' },
         { '<leader>d', name = '[D]ocument' },
-        { '<leader>r', name = '[R]ename'},
-        { '<leader>s', name = '[S]earch'},
-        { '<leader>w', name = '[W]orkspace'},
-        { '<leader>t', name = '[T]oggle'},
+        { '<leader>r', name = '[R]ename' },
+        { '<leader>s', name = '[S]earch' },
+        { '<leader>w', name = '[W]orkspace' },
+        { '<leader>t', name = '[T]oggle' },
         { '<leader>h', name = 'Git [H]unk', mode = { 'n', 'v' } },
       }
     end,
@@ -539,6 +540,8 @@ require('lazy').setup({
         'pyright',
         'pint',
         'html-lsp',
+        'rust-analyzer',
+        'svelte-language-server',
         'yaml-language-server',
         'twiggy-language-server',
         'twigcs',
@@ -748,7 +751,8 @@ require('lazy').setup({
       --  - yinq - [Y]ank [I]nside [N]ext [']quote
       --  - ci'  - [C]hange [I]nside [']quote
       require('mini.ai').setup { n_lines = 500 }
-
+      require('mini.files').setup()
+      vim.keymap.set('n', '<leader>e', require('mini.files').open, { desc = '[F]ile [E]xplorer' })
       -- Add/delete/replace surroundings (brackets, quotes, etc.)
       --
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
