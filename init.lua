@@ -746,20 +746,20 @@ require('lazy').setup({
     'echasnovski/mini.nvim',
     config = function()
       -- Better Around/Inside textobjects
+      require('mini.surround').setup()
       --
       -- Examples:
       --  - va)  - [V]isually select [A]round [)]paren
       --  - yinq - [Y]ank [I]nside [N]ext [']quote
       --  - ci'  - [C]hange [I]nside [']quote
-      require('mini.ai').setup { n_lines = 500 }
-      require('mini.files').setup()
-      vim.keymap.set('n', '<leader>e', require('mini.files').open, { desc = '[F]ile [E]xplorer' })
       -- Add/delete/replace surroundings (brackets, quotes, etc.)
       --
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
-      require('mini.surround').setup()
+      require('mini.ai').setup { n_lines = 500 }
+      require('mini.files').setup()
+      vim.keymap.set('n', '<leader>e', require('mini.files').open, { desc = '[F]ile [E]xplorer' })
       require('mini.move').setup()
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
@@ -775,6 +775,10 @@ require('lazy').setup({
       statusline.section_location = function()
         return '%2l:%-2v'
       end
+
+      -- Dashboard for Neovim
+      require('mini.starter').setup()
+
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,

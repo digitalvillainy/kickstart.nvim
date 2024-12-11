@@ -1,5 +1,5 @@
 -- Needed to properly toggle codeium
-local codeium_enabled = true
+local codeium_enabled = false
 
 -- function to toggle codeium_enabled
 local function toggle_codeium()
