@@ -14,6 +14,7 @@ end
 return {
   'Exafunction/codeium.vim',
   config = function()
+    vim.g.codeium_enabled = false
     -- Example: Change Codeium keymaps
     vim.g.codeium_disable_bindings = 1 -- Disable default keybindings
 
