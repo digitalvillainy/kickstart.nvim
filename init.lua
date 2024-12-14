@@ -18,6 +18,16 @@ vim.opt.number = true
 --  Experiment for yourself to see if you like it!
 vim.opt.relativenumber = true
 
+-- Toggle relativenumber
+-- TODO: vim.opt.relativenumber:get() works it just throws up an warning. Find alternative.
+vim.keymap.set('n', '<Leader>tr', function()
+  if vim.opt.relativenumber:get() == true then
+    vim.opt.relativenumber = false
+  else
+    vim.opt.relativenumber = true
+  end
+end, { desc = 'Toggle relative line numbers' })
+
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
 
@@ -205,6 +215,7 @@ require('lazy').setup({
         { '<leader>t', name = '[T]oggle' },
         { '<leader>h', name = 'Git [H]unk', mode = { 'n', 'v' } },
         { '<leader>tc', name = 'Toggle Codeium' },
+        { '<leader>tr', name = 'Toggle relative numbers' },
       }
     end,
   },
