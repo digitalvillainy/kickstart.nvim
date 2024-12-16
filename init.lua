@@ -636,7 +636,9 @@ require('lazy').setup({
             'rafamadriz/friendly-snippets',
             config = function()
               require('luasnip.loaders.from_vscode').lazy_load()
-              require('luasnip.loaders.from_vscode').lazy_load { paths = { vim.fn.stdpath 'config' .. '/snippets' } }
+              require('luasnip.loaders.from_vscode').load({
+                paths = { vim.fn.stdpath("config") .. "/snippets" }
+              })
               -- friendly-snippets - enable standardized comments snippets
               require('luasnip').filetype_extend('typescript', { 'tsdoc' })
               require('luasnip').filetype_extend('javascript', { 'jsdoc' })
@@ -731,7 +733,6 @@ require('lazy').setup({
       }
     end,
   },
-
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
@@ -881,6 +882,9 @@ require('lazy').setup({
     },
   },
 })
+
+-- load custom snippets here
+require("snippets.php")
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
