@@ -172,6 +172,16 @@ require('lazy').setup({
   -- See `:help gitsigns` to understand what the configuration keys do
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
+    current_line_blame = true, -- Toggle with `:Gitsigns toggle_current_line_blame`
+    current_line_blame_opts = {
+      virt_text = true,
+      virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
+      delay = 1000,
+      ignore_whitespace = false,
+      virt_text_priority = 100,
+      use_focus = true,
+    },
+    current_line_blame_formatter = '<author>, <author_time:%R> - <summary>',
     opts = {
       signs = {
         add = { text = '+' },
@@ -308,9 +318,16 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
       vim.keymap.set('n', '<C-s>', '<cmd>w<cr>', { desc = 'Save changes in current buffer' })
-      vim.keymap.set('n', '<C-a>', '<cmd>wqa<cr>', { desc = 'Save and exit all buffers' })
+      vim.keymap.set('n', '<C-A>', '<cmd>wqa<cr>', { desc = 'Save and exit all buffers' })
       vim.keymap.set('n', '<leader>bd', '<cmd>bd<cr>', { desc = 'close current buffer' })
-      vim.keymap.set('n', '<leader>bo', ':%bd!|e #|bd #|normal`"<CR>', { desc = 'close all but current buffer' })
+      vim.keymap.set('n', '<leader>bo', function()
+        local current_buf = vim.api.nvim_get_current_buf()
+        for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+          if buf ~= current_buf and vim.api.nvim_buf_is_loaded(buf) then
+            vim.api.nvim_buf_delete(buf, { force = true })
+          end
+        end
+      end, { desc = 'Close all buffers except current' })
       vim.keymap.set('n', '<leader>u', '<cmd>DBUI<cr>', { desc = 'Open DadBod UI' })
 
       -- Slightly advanced example of overriding default behavior and theme
@@ -636,9 +653,9 @@ require('lazy').setup({
             'rafamadriz/friendly-snippets',
             config = function()
               require('luasnip.loaders.from_vscode').lazy_load()
-              require('luasnip.loaders.from_vscode').load({
-                paths = { vim.fn.stdpath("config") .. "/snippets" }
-              })
+              require('luasnip.loaders.from_vscode').load {
+                paths = { vim.fn.stdpath 'config' .. '/snippets' },
+              }
               -- friendly-snippets - enable standardized comments snippets
               require('luasnip').filetype_extend('typescript', { 'tsdoc' })
               require('luasnip').filetype_extend('javascript', { 'jsdoc' })
@@ -884,7 +901,7 @@ require('lazy').setup({
 })
 
 -- load custom snippets here
-require("snippets.php")
+require 'snippets.php'
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
