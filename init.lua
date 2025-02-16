@@ -318,16 +318,19 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
       vim.keymap.set('n', '<C-s>', '<cmd>w<cr>', { desc = 'Save changes in current buffer' })
-      vim.keymap.set('n', '<C-A>', '<cmd>wqa<cr>', { desc = 'Save and exit all buffers' })
+      vim.keymap.set('n', '<C-S-a>', '<cmd>wqa<cr>', { desc = 'Save and exit all buffers' })
       vim.keymap.set('n', '<leader>bd', '<cmd>bd<cr>', { desc = 'close current buffer' })
       vim.keymap.set('n', '<leader>bo', function()
         local current_buf = vim.api.nvim_get_current_buf()
         for _, buf in ipairs(vim.api.nvim_list_bufs()) do
           if buf ~= current_buf and vim.api.nvim_buf_is_loaded(buf) then
-            vim.api.nvim_buf_delete(buf, { force = true })
+            local buftype = vim.bo[buf].buftype
+            if buftype == '' then -- Only close normal file buffers
+              vim.api.nvim_buf_delete(buf, { force = true })
+            end
           end
         end
-      end, { desc = 'Close all buffers except current' })
+      end, { desc = 'Close all file buffers except current' })
       vim.keymap.set('n', '<leader>u', '<cmd>DBUI<cr>', { desc = 'Open DadBod UI' })
 
       -- Slightly advanced example of overriding default behavior and theme
