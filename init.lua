@@ -284,6 +284,20 @@ require('lazy').setup({
       -- [[ Configure Telescope ]]
       -- See `:help telescope` and `:help telescope.setup()`
       require('telescope').setup {
+        defaults = {
+          file_ignore_patterns = {}, -- Make sure no patterns are ignored
+          vimgrep_arguments = {
+            'rg',
+            '--color=never',
+            '--no-heading',
+            '--with-filename',
+            '--line-number',
+            '--column',
+            '--smart-case',
+            '--hidden', -- Include hidden files
+            '--no-ignore', -- Do not respect .gitignore
+          },
+        },
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
@@ -308,10 +322,22 @@ require('lazy').setup({
       local builtin = require 'telescope.builtin'
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
+      vim.keymap.set('n', '<leader>sf', function()
+        require('telescope.builtin').find_files {
+          hidden = true,
+          no_ignore = true,
+          follow = true, -- Follow symbolic links
+        }
+      end, { desc = '[S]earch [F]iles (including hidden and ignored)' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-      vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
+      vim.keymap.set('n', '<leader>sg', function()
+        require('telescope.builtin').live_grep {
+          additional_args = function()
+            return { '--hidden', '--no-ignore' }
+          end,
+        }
+      end, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
@@ -773,7 +799,19 @@ require('lazy').setup({
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.ai').setup { n_lines = 500 }
       require('mini.files').setup()
-      vim.keymap.set('n', '<leader>e', require('mini.files').open, { desc = '[F]ile [E]xplorer' })
+      -- Function to open mini.files in the current file's directory
+      function OpenMiniFilesInCurrentDir()
+        local bufname = vim.api.nvim_buf_get_name(0) -- Get the current buffer's file name
+        if bufname ~= '' then
+          local dir = vim.fn.fnamemodify(bufname, ':h') -- Extract directory from file path
+          require('mini.files').open(dir)
+        else
+          require('mini.files').open() -- Fallback to default behavior
+        end
+      end
+
+      -- Keybinding to open mini.files in the current file's directory
+      vim.api.nvim_set_keymap('n', '<leader>e', ':lua OpenMiniFilesInCurrentDir()<CR>', { noremap = true, silent = true, desc = '[F]ile [E]xplorer' })
       require('mini.move').setup()
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
