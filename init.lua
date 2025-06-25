@@ -298,6 +298,14 @@ require('lazy').setup({
             '--no-ignore', -- Do not respect .gitignore
           },
         },
+
+        pickers = {
+          find_files = {
+            hidden = true,
+            no_ignore = true,
+            no_ignore_parent = true
+          }
+        },
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
@@ -332,8 +340,13 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
       vim.keymap.set('n', '<C-s>', '<cmd>w<cr>', { desc = 'Save changes in current buffer' })
-      vim.keymap.set('n', '<C-S-a>', '<cmd>wqa<cr>', { desc = 'Save and exit all buffers' })
-      vim.keymap.set('n', '<leader>bd', '<cmd>bd<cr>', { desc = 'close current buffer' })
+      vim.keymap.set('n', '<C-S-s>', '<cmd>wqa<cr>', { desc = 'Save and exit all buffers' })
+      vim.keymap.set('n', '<leader>bd', function ()
+        require('mini.bufremove').delete(0, false)
+      end, { desc = 'Delete buffer' })
+      vim.keymap.set('n', '<leader>bD', function ()
+        require('mini.bufremove').delete(0, true)
+      end, { desc = 'Force Delete buffer' })
       vim.keymap.set('n', '<leader>bo', function()
         local current_buf = vim.api.nvim_get_current_buf()
         for _, buf in ipairs(vim.api.nvim_list_bufs()) do
@@ -787,6 +800,7 @@ require('lazy').setup({
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.ai').setup { n_lines = 500 }
       require('mini.files').setup()
+      require('mini.bufremove').setup()
       -- Function to open mini.files in the current file's directory
       function OpenMiniFilesInCurrentDir()
         local bufname = vim.api.nvim_buf_get_name(0) -- Get the current buffer's file name
