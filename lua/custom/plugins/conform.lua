@@ -13,12 +13,11 @@ return {
       ---@type table<string, conform.FormatterUnit[]>
       formatters_by_ft = {
         lua = { 'stylua' },
-        fish = { 'fish_indent' },
         sh = { 'shfmt' },
         php = { 'pint' },
         blade = { 'blade-formatter', 'rustywind' },
         python = { 'black' },
-        javascript = { 'prettierd' },
+        javascript = { 'prettier' },
       },
       -- LazyVim will merge the options you set here with builtin formatters.
       -- You can also define any custom formatters here.
