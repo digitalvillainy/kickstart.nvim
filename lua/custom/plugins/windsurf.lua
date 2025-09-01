@@ -12,7 +12,7 @@ local function toggle_codeium()
 end
 
 return {
-  'Exafunction/codeium.vim',
+  'Exafunction/windsurf.vim',
   config = function()
     vim.g.codeium_enabled = false
     -- Example: Change Codeium keymaps
@@ -22,9 +22,9 @@ return {
     vim.keymap.set('i', '<C-a>', function()
       return vim.fn['codeium#Accept']()
     end, { expr = true, silent = true })
-    vim.keymap.set('i', '<C-k>', function()
-      return vim.fn
-    end, { expr = true, silent = true })
+    vim.keymap.set('n', '<C-A-K>', function()
+      return vim.fn['codeium#Chat']()
+    end, { noremap = true, silent = true })
     vim.keymap.set('i', '<C-j>', function()
       return vim.fn['codeium#CycleCompletions'](-1)
     end, { expr = true, silent = true })
@@ -35,6 +35,7 @@ return {
 
     -- Toggle codeium
     vim.keymap.set('n', '<Leader>tc', toggle_codeium, { noremap = true, silent = true })
+
 
   end,
 }
