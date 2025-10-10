@@ -1,54 +1,71 @@
-local util = require 'conform.util'
 return {
-  'stevearc/conform.nvim',
+  "stevearc/conform.nvim",
   opts = function()
     ---@class ConformOpts
     local opts = {
-      -- LazyVim will use these options when formatting with the conform.nvim formatter
-      format = {
-        timeout_ms = 3000,
-        async = false, -- not recommended to change
-        quiet = false, -- not recommended to change
-      },
-      ---@type table<string, conform.FormatterUnit[]>
+      format = { timeout_ms = 3000, async = false, quiet = false },
       formatters_by_ft = {
-        lua = { 'stylua' },
-        sh = { 'shfmt' },
-        php = { 'pint' },
-        blade = { 'blade-formatter', 'rustywind' },
-        python = { 'black' },
-        javascript = { 'prettier' },
+        lua = { "stylua" },
+        sh = { "shfmt" },
+        php = { "php-cs-fixer" },
+        blade = { "blade-formatter", "rustywind" },
+        python = { "black" },
+        javascript = { "prettier" },
+        typescript = { "prettier" },
+        typescriptreact = { "prettier" },
+        svelte = { "prettier" },
+        css = { "prettier" },
+        scss = { "prettier" },
+        json = { "prettier" },
+        yaml = { "prettier" },
+        html = { "prettier" },
+        markdown = { "prettier" },
+        rust = { "rustfmt" },
       },
-      -- LazyVim will merge the options you set here with builtin formatters.
-      -- You can also define any custom formatters here.
-      ---@type table<string, conform.FormatterConfigOverride|fun(bufnr: integer): nil|conform.FormatterConfigOverride>
       formatters = {
         injected = { options = { ignore_errors = true } },
-        -- # Example of using dprint only when a dprint.json file is present
-        -- dprint = {
-        --   condition = function(ctx)
-        --     return vim.fs.find({ "dprint.json" }, { path = ctx.filename, upward = true })[1]
-        --   end,
-        -- },
-        --
-        -- # Example of using shfmt with extra args
-        -- shfmt = {
-        --   extra_args = { "-i", "2", "-ci" },
-        -- },
-        pint = {
-          meta = {
-            url = 'https://github.com/laravel/pint',
-            description = 'Laravel Pint is an opinionated PHP code style fixer for minimalists. Pint is built on top of PHP-CS-Fixer and makes it simple to ensure that your code style stays clean and consistent.',
-          },
-          command = util.find_executable({
-            vim.fn.stdpath 'data' .. '/mason/bin/pint',
-            'vendor/bin/pint',
-          }, 'pint'),
-          args = { '$FILENAME' },
-          stdin = false,
-        },
+        ["php-cs-fixer"] = function(bufnr)
+          local util  = require("conform.util")
+          local fname = vim.api.nvim_buf_get_name(bufnr)
+          local start = vim.fs.dirname(fname)
+
+          local found = vim.fs.find({ ".php-cs-fixer.php", ".php-cs-fixer.dist.php" }, {
+            path = start,
+            upward = true,
+          })[1]
+
+          local local_bin = util.find_executable({
+            "vendor/bin/php-cs-fixer",
+            "php-cs-fixer",
+          }, start)
+
+          local args = { "fix", "$FILENAME" }
+          if found then
+            table.insert(args, 2, "--config=" .. found)
+          else
+            table.insert(args, 2, "--rules=@PSR12")
+          end
+
+          return {
+            command = local_bin or "php-cs-fixer",
+            stdin = false,
+            args = args,
+          }
+        end,
       },
     }
     return opts
   end,
+  keys = {
+    {
+      "<leader>f",
+      function()
+        require("conform").format({
+          async = true,
+          lsp_fallback = true,
+        })
+      end,
+      desc = "Format buffer",
+    },
+  },
 }
